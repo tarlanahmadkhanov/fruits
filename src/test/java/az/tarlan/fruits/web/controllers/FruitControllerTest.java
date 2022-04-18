@@ -9,8 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.UUID;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -29,21 +28,30 @@ class FruitControllerTest {
     @Autowired
     FruitUtils fruitUtils;
 
+
     @Test
     void getFruitById() throws Exception {
+        FruitDto fruitDto = fruitUtils.getValidFruitDto();
+        String fruitDtoJson = objectMapper.writeValueAsString(fruitDto);
 
-        mockMvc.perform(get("/api/v1/fruit/"+ UUID.randomUUID().toString()).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+        MvcResult result = mockMvc.perform(post("/api/v1/fruit/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(fruitDtoJson)).andExpect(status().isCreated())
+                .andReturn();
+
+        String savedFruitId = result.getResponse().getHeader("Created-fruit-id");
+
+        mockMvc.perform(get("/api/v1/fruit/"+ savedFruitId).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
 
     @Test
     void saveNewFruit() throws Exception {
-
         FruitDto fruitDto = fruitUtils.getValidFruitDto();
         String fruitDtoJson = objectMapper.writeValueAsString(fruitDto);
 
         mockMvc.perform(post("/api/v1/fruit/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(fruitDtoJson))
-                .andExpect(status().isCreated());
+                .content(fruitDtoJson)).andExpect(status().isCreated());
+
     }
 }
