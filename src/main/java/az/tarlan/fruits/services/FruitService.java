@@ -2,10 +2,13 @@ package az.tarlan.fruits.services;
 
 import az.tarlan.fruits.exceptions.FruitNotFound;
 import az.tarlan.fruits.mappers.FruitMapper;
+import az.tarlan.fruits.persistance.entities.Fruit;
 import az.tarlan.fruits.persistance.repositories.FruitRepository;
 import az.tarlan.fruits.web.models.FruitDto;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -28,5 +31,12 @@ public class FruitService implements IFruitService {
         return fruitMapper.fruitToFruitDto(fruitRepository.save(fruitMapper.fruitDtoToFruit(fruitDto)));
     }
 
-
+    @Override
+    public List<FruitDto> getByFruitName(String fruitName) {
+        List<FruitDto> fruitDtos = new ArrayList<>();
+        for (Fruit fruit: fruitRepository.findByFruitNameIgnoreCase(fruitName.toLowerCase())) {
+            fruitDtos.add(fruitMapper.fruitToFruitDto(fruit));
+        }
+        return fruitDtos;
+    }
 }

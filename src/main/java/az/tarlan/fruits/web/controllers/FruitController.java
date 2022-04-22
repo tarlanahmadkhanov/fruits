@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequestMapping("/api/v1/fruit")
@@ -28,6 +29,11 @@ public class FruitController {
         } catch (FruitNotFound fruitNotFound) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/findbyname/{fruitName}")
+    public ResponseEntity<List<FruitDto>> getFruitsByName(@PathVariable String fruitName) {
+        return new ResponseEntity<>(fruitService.getByFruitName(fruitName), HttpStatus.OK);
     }
 
     @PostMapping
