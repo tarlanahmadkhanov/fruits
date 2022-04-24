@@ -1,5 +1,6 @@
 package az.tarlan.fruits.web.controllers;
 
+import az.tarlan.fruits.clients.FruitClient;
 import az.tarlan.fruits.exceptions.FruitNotFound;
 import az.tarlan.fruits.services.IFruitService;
 import az.tarlan.fruits.web.models.FruitDto;
@@ -42,4 +43,5 @@ public class FruitController {
         responseHeaders.set("Created-fruit-id", fruitService.saveNewFruit(fruitDto).getFruitId().toString());
         return new ResponseEntity<>(responseHeaders, HttpStatus.CREATED);
     }
+
 }
